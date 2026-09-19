@@ -1,0 +1,299 @@
+{{define "content"}}
+
+<div class="row">
+    <div class="col s12 m10 l6">
+        <img src="/assets/HeaderRegio.svg" alt="Header" />
+    </div>
+    <div class="col s6 m6 l3" hidden>
+        <center>
+            <h5>Blonde</h5>
+            <h1 id='blonde' class="text-center" style="display: inline;vertical-align: middle;">0.000</h1>
+            <h1 id='blonde_quantity' class="text-center" style="display: none" hidden>0.000</h1>
+            <button class="btn-floating btn-large grey waves-effect waves-light tooltipped" data-position="right"
+                data-delay="50" data-tooltip="RAZ Blonde" onclick="raz('blonde')" style="display: inline-block;">
+                <i class="material-icons">rotate_left</i>
+            </button>
+            {{if .kegBlondeID}}
+            <button data-target="modal_{{.kegBlondeID}}" class="btn-floating btn-large blue waves-effect waves-light tooltipped modal-trigger" data-position="right" data-delay="50" data-tooltip="Renouveler Fût Blonde" style="display: inline-block; margin-left: 10px;">
+                <img src="/assets/beer_keg.svg" height="30" width="30" style="margin-top: 12px" />
+            </button>
+            {{end}}
+        </center>
+    </div>
+    <div class="col s6 m6 l3" hidden>
+        <center>
+            <h5>Spécial</h5>
+            <h1 id='special' class="text-center" style="display: inline;vertical-align: middle;">0.000</h1>
+            <h1 id='special_quantity' class="text-center" style="display: none" hidden>0.000</h1>
+            <button class="btn-floating btn-large grey waves-effect waves-light tooltipped" data-position="right"
+                data-delay="50" data-tooltip="RAZ Spécial" onclick="raz('special')" style="display: inline-block;">
+                <i class="material-icons">rotate_left</i>
+            </button>
+            {{if .kegSpecialID}}
+            <button data-target="modal_{{.kegSpecialID}}" class="btn-floating btn-large blue waves-effect waves-light tooltipped modal-trigger" data-position="right" data-delay="50" data-tooltip="Renouveler Fût Spécial" style="display: inline-block; margin-left: 10px;">
+                <img src="/assets/beer_keg.svg" height="30" width="30" style="margin-top: 12px" />
+            </button>
+            {{end}}
+        </center>
+    </div>
+</div>
+
+<div class="row">
+    <div class="input-field col s6">
+        <input placeholder="Chercher ..." type="text" onkeyup="Search()" id="Search">
+    </div>
+    <div class="input-field col s6">
+        <button class="btn-floating btn-large waves-effect waves-light tooltipped" data-position="right" data-delay="50"
+            data-tooltip="Descendre" onclick="window.scrollTo(0,document.body.scrollHeight);">
+            <i class="material-icons">arrow_downward</i>
+        </button>
+    </div>
+</div>
+
+<table class="col s12 centered highlight striped tablesorter" id="Table">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Surnom</th>
+            <th>Compte</th>
+            <!-- Precision formatting handled simply, or via a func map. For now, printf will do -->
+            <th colspan="4"> Total : {{printf "%.2f" .totalAmount}}€ </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <!-- We will iterate over userSorted which contains {Key: userID, Value: sum} to maintain order -->
+        {{$usersMap := .users}}
+        {{range $index, $kv := .userSorted}}
+        {{$user := index $usersMap $kv.Key}}
+        {{if not $user}}
+        <!-- in case we have a map of users vs array, let's assume we pass users as map for O(1) or find it. Actually we pass users slice, so we need a helper or just iterate the slice. Let's fix this in handler if this breaks, or pass map -->
+        <!-- Just an approximation. In handler, we can pass a struct of {User, Sum} -->
+        {{end}}
+        {{/* For simplicity, we assume we passed a sorted slice of {User, Value} */}}
+        {{end}}
+
+        <!-- Alternative logic: let's map over the users slice directly for now to keep the port simple based on provided logic. In Go handler, it's best to pass the sorted struct. Let's redefine how we iterate. -->
+        <!-- Assuming we will pass a `userItems` array containing {User: models.User, WarningClass: string, WarningHTML: template.HTML} from the handler to make templates clean -->
+        {{range $index, $item := .userItems}}
+        <tr>
+            <td>{{$item.User.LastName}}</td>
+            <td>{{$item.User.FirstName}}</td>
+            <td>{{$item.User.Alias}}</td>
+            <td class="{{$item.Class}}">{{printf "%.3f" $item.User.Amount}}€ {{$item.WarningHTML}}</td>
+            <td>
+                <button class="btn-floating waves-effect green tooltipped" data-position="bottom" data-delay="1000"
+                    data-tooltip="Infos" onclick="window.location.href='/users/{{$item.User.ID}}'">
+                    <i class="material-icons">zoom_in</i>
+                </button>
+            </td>
+            <td>
+                <button class="btn-floating waves-effect amber tooltipped" data-position="bottom" data-delay="1000"
+                    data-tooltip="Paye sa bière" onclick="handlePay(this, {{$item.User.ID}})">
+                    <img src="/assets/beer_glass.svg" height="30" width="30" style="margin-top: 5px" />
+                </button>
+            </td>
+            <td>
+                <button class="btn-floating waves-effect light-blue tooltipped" data-position="bottom" data-delay="1000"
+                    data-tooltip="Renflouer" onclick="window.location.href='/operations/add?userid={{$item.User.ID}}'">
+                    <i class="material-icons">euro_symbol</i>
+                </button>
+            </td>
+            <td>
+                <button class="btn-floating waves-effect red tooltipped" data-position="bottom" data-delay="1000"
+                    data-tooltip="Echange"
+                    onclick="window.location.href='/operations/exchange?userid={{$item.User.ID}}'">
+                    <i class="material-icons">compare_arrows</i>
+                </button>
+            </td>
+        </tr>
+        {{end}}
+    </tbody>
+</table>
+
+<br>
+
+<button class="btn-floating btn-large waves-effect waves-light green tooltipped" data-position="bottom"
+    data-delay="1000" data-tooltip="Ajouter un Vélivole" onclick="window.location.href='/users/new'">
+    <i class="material-icons">add</i>
+</button>
+
+<button class="btn-floating btn-large waves-effect waves-light tooltipped" data-position="bottom" data-delay="1000"
+    data-tooltip="Transactions" onclick="window.location.href='/operations'">
+    <i class="material-icons">cached</i>
+</button>
+
+<button class="btn-floating btn-large waves-effect waves-light amber tooltipped" data-position="bottom"
+    data-delay="1000" data-tooltip="Boissons" onclick="window.location.href='/drinks'">
+    <img src="/assets/beer_glass.svg" height="30" width="30" style="margin-top: 12px" />
+    <i class="material-icons" style="margin-left:10px; margin-top:10px;">add</i>
+</button>
+
+<button class="btn-floating btn-large waves-effect waves-light grey tooltipped" data-position="bottom" data-delay="1000"
+    data-tooltip="Fûts" onclick="window.location.href='/kegs'">
+    <img src="/assets/beer_keg.svg" height="30" width="30" style="margin-top: 12px" />
+    <i class="material-icons" style="margin-left:10px; margin-top:10px;">add</i>
+</button>
+
+<br /><br /><br />
+
+{{range .kegItems}}
+<div class="chip">
+    <img src="/assets/beer_keg.svg" style="height: 25px !important; width: 25px !important; margin-top: 2px" />
+    <span style='position: relative; bottom: 3px'> {{.Keg.Name}} {{.DrinkName}} : {{.OpNum}}</span>
+    <a href="#modal_{{.Keg.ID}}"><i class="material-icons tooltipped" data-position="top" data-delay="1000"
+            data-tooltip="Renouveler" style='position: relative; top: 3px'>cached</i></a>
+    <div id="p1" style="width: 100%" class="progress" value="{{.OpNum}}">
+        <div class="determinate" style="width: {{.Percent}}%;"></div>
+    </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="modal_{{.Keg.ID}}" class="modal">
+    <div class="modal-content">
+        <h5>Vous avez tout bu !<br>Le renouvellement du fût est donc indispenssable !</h5>
+        <p>La nouvelle recharge est bien celle ci :<br>
+            {{.DrinkName}} de {{.Keg.Capacity}} au prix de {{.Keg.Price}}€ ?</p>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">Abandonner</a>
+        <a href="/kegs/{{.Keg.ID}}/renew" class="modal-action modal-close waves-effect waves-green btn-flat">Valider</a>
+    </div>
+</div>
+{{end}}
+
+<!-- JS Removed ActionCable lines, replacing them with simple polling or omitting real-time for now if unsupported -->
+<!-- To maintain exactly the same theme, we keep JS structure but adjust API calls -->
+<script>
+    $(document).ready(function () {
+        if (typeof Materialize !== 'undefined') {
+            $('.modal').modal();
+        }
+        if ($.fn.tablesorter) {
+            $("#Table").tablesorter();
+        }
+    });
+
+    function Search() {
+        var input = document.getElementById("Search");
+        var filter = input.value.toUpperCase();
+        var table = document.getElementById("Table");
+        var tr = table.getElementsByTagName("tr");
+        for (var i = 1; i < tr.length; i++) { // Start at 1 to skip table header
+            var tds = tr[i].getElementsByTagName("td");
+            if (tds.length > 0) {
+                var match = false;
+                // Check column 0 (Index), 1 (Name), 2 (Firstname), 3 (Alias)
+                for (var j = 0; j <= 3; j++) {
+                    if (tds[j] && tds[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        match = true;
+                        break;
+                    }
+                }
+                tr[i].style.display = match ? "" : "none";
+            }
+        }
+    }
+
+    function updateCounters() {
+        var priceBlonde = {{.priceBlonde}};
+        var priceSpecial = {{.priceSpecial}};
+
+        $.getJSON('/beerflows/1', function (data) {
+            if (!data || data.quantity == 0.0) {
+                data = { quantity: 0.000 };
+            }
+            document.getElementById('blonde_quantity').innerHTML = parseFloat(data.quantity)
+            if (priceBlonde > 0) {
+                var totalBlonde = 4 * parseFloat(data.quantity) * priceBlonde;
+                document.getElementById('blonde').innerHTML = parseFloat(totalBlonde).toFixed(3);
+            } else {
+                document.getElementById('blonde').innerHTML = parseFloat(data.quantity).toFixed(3);
+            }
+        });
+
+        $.getJSON('/beerflows/2', function (data) {
+            if (!data || data.quantity == 0.0) {
+                data = { quantity: 0.000 };
+            }
+            document.getElementById('special_quantity').innerHTML = parseFloat(data.quantity)
+            if (priceSpecial > 0) {
+                var totalSpecial = 4 * parseFloat(data.quantity) * priceSpecial;
+                document.getElementById('special').innerHTML = parseFloat(totalSpecial).toFixed(3);
+            } else {
+                document.getElementById('special').innerHTML = parseFloat(data.quantity).toFixed(3);
+            }
+        });
+    }
+
+    // Call it immediately then every 3 seconds
+    updateCounters();
+    setInterval(updateCounters, 3000);
+
+    function handlePay(btn, user_id) {
+        var blondeQ = parseFloat(document.getElementById('blonde_quantity').innerHTML) || 0;
+        var specialQ = parseFloat(document.getElementById('special_quantity').innerHTML) || 0;
+
+        if (blondeQ === 0 && specialQ === 0) {
+            window.location.href = '/operations/new?userid=' + user_id;
+        } else {
+            btn.disabled = true;
+            
+            var requests = [];
+            
+            if (blondeQ > 0) {
+                var numberDrinkB = blondeQ / 0.25;
+                requests.push($.ajax({
+                    type: "POST",
+                    url: '/operations',
+                    data: {
+                        'operation[user_id]': user_id,
+                        'operation[numberDrink]': numberDrinkB,
+                        'post[drink]': '1' // ID for Blonde
+                    }
+                }));
+                requests.push($.ajax({
+                    type: "POST",
+                    url: '/beerflows/1',
+                    data: {
+                        '_method': 'patch',
+                        'quantity': 0
+                    }
+                }));
+            }
+            
+            if (specialQ > 0) {
+                var numberDrinkS = specialQ / 0.25;
+                requests.push($.ajax({
+                    type: "POST",
+                    url: '/operations',
+                    data: {
+                        'operation[user_id]': user_id,
+                        'operation[numberDrink]': numberDrinkS,
+                        'post[drink]': '9' // ID for Special
+                    }
+                }));
+                requests.push($.ajax({
+                    type: "POST",
+                    url: '/beerflows/2',
+                    data: {
+                        '_method': 'patch',
+                        'quantity': 0
+                    }
+                }));
+            }
+
+            $.when.apply($, requests).always(function() {
+                // Refresh logic if needed, or simply let the polling update the UI visually
+                // We could re-direct to users, or just clear UI right away:
+                if (blondeQ > 0) document.getElementById('blonde_quantity').innerHTML = '0.000';
+                if (specialQ > 0) document.getElementById('special_quantity').innerHTML = '0.000';
+                btn.disabled = false;
+                updateCounters();
+            });
+        }
+    }
+</script>
+
+{{end}}

@@ -1,0 +1,32 @@
+{{define "content"}}
+<h1>Editing Beerflow</h1>
+
+<form action="/beerflows/{{.beerflow.ID}}" accept-charset="UTF-8" method="post">
+    {{if .error}}
+    <div id="error_explanation">
+        <h2>Erreur:</h2>
+        <ul>
+            <li>{{.error}}</li>
+        </ul>
+    </div>
+    {{end}}
+
+    <div class="field">
+        <label for="beerflow_quantity">Quantity</label>
+        <input type="text" name="beerflow[quantity]" id="beerflow_quantity" value="{{.beerflow.Quantity}}" />
+    </div>
+
+    <div class="field">
+        <label for="beerflow_drink_id">Drink id</label>
+        <input type="text" name="beerflow[drink_id]" id="beerflow_drink_id" value="{{.beerflow.DrinkID}}" />
+    </div>
+
+    <div class="actions">
+        <input type="submit" name="commit" value="Update Beerflow" />
+    </div>
+</form>
+
+
+<a href="/beerflows/{{.beerflow.ID}}">Show</a> |
+<a href="/beerflows">Back</a>
+{{end}}

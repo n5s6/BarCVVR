@@ -1,0 +1,16 @@
+{{define "content"}}
+{{if .notice}}<p id="notice">{{.notice}}</p>{{end}}
+
+<p>
+  <strong>Quantity:</strong>
+  {{.beerflow.Quantity}}
+</p>
+
+<p>
+  <strong>Drink id:</strong>
+  {{.beerflow.DrinkID}}
+</p>
+
+<a href="/beerflows/{{.beerflow.ID}}/edit">Edit</a> |
+<a href="/beerflows">Back</a>
+{{end}}

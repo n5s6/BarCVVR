@@ -1,0 +1,83 @@
+{{define "content"}}
+<h3>Modification de l'opération de {{.user.FirstName}} {{.user.LastName}}</h3>
+
+<br><br>
+
+<div class="row">
+  <form action="/operations/{{.operation.ID}}" accept-charset="UTF-8" method="post">
+
+    {{if .error}}
+    <div class="row">
+      <div class="col s12 l7">
+        <div class="card red darken-4">
+          <div class="card-content white-text">
+            <span class="card-title">Erreur d'enregistrement:</span>
+            <ul>
+              <li>{{.error}}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{end}}
+
+    <div class="field" style="display: none;">
+      <label for="operation_date">Date</label>
+      <input type="hidden" name="operation[date]" id="operation_date"
+        value="{{if .operation.Date}}{{.operation.Date.Format " 2006-01-02T15:04:05"}}{{end}}" />
+    </div>
+
+    <div class="field" style="display: none;">
+      <label for="operation_user_id">User ID</label>
+      <input type="number" name="operation[user_id]" id="operation_user_id" value="{{.operation.UserID}}" />
+    </div>
+
+    <div class="input-field col s12 l7">
+      <input type="number" name="operation[sum]" id="operation_sum" value="{{.operation.Sum}}"
+        pattern="-?[0-9]*(\.[0-9]+)?" step="0.01" />
+      <label for="operation_sum" class="active" data-error="Ce n'est pas un nombre valide">Somme</label>
+    </div>
+
+    <div class="input-field col s12 l7">
+      <input type="number" name="operation[numberDrink]" id="operation_numberDrink" value="{{.operation.NumberDrink}}"
+        pattern="^[0-9]*(\.[0-9]+)?" step="0.01" />
+      <label for="operation_numberDrink" class="active" data-error="Ce n'est pas un nombre valide">Nombre de
+        verres</label>
+    </div>
+
+    <div class="input-field col s12 l7">
+      <input type="text" name="operation[comment]" id="operation_comment" value="{{.operation.Comment}}" />
+      <label for="operation_comment" class="active">Commentaire</label>
+    </div>
+
+    <div class="input-field col s12 l7">
+      <label for="admin_password">Mot de passe Administrateur</label>
+      <input type="password" name="admin_password" id="admin_password" value="" />
+    </div>
+
+    <div class="col s12">
+      <br>
+      <input type="checkbox" name="op[delete]" id="op_delete" value="yes" />
+      <label for="op_delete" class="red-text"><b>Supprimer l'opération</b></label>
+    </div>
+
+    <br />
+
+    <div class="col s12 l7">
+      <br /><br /><br />
+      <button class="btn waves-effect waves-light" type="submit" name="action">Valider
+        <i class="material-icons right">send</i>
+      </button>
+    </div>
+  </form>
+
+</div>
+
+<script>
+  $(document).ready(function () {
+    if (typeof Materialize !== 'undefined') {
+      $('select').material_select();
+    }
+  });
+</script>
+{{end}}

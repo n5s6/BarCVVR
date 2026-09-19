@@ -1,0 +1,35 @@
+{{define "content"}}
+<table class="col s12 l7 centered highlight striped" id="Table">
+  <thead>
+    <tr>
+      <th>Boisson</th>
+      <th>Startdate</th>
+      <th>Enddate</th>
+      <th>Capacité</th>
+      <th>Prix</th>
+      <th>Nombre de boisson payées</th>
+      <th>Rentabilité</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>{{.drinkName}}</td>
+      <td>{{if .keg.StartDate}}{{.keg.StartDate.Format "2006-01-02 15:04:05 -0700"}}{{end}}</td>
+      <td>{{if .keg.EndDate}}{{.keg.EndDate.Format "2006-01-02 15:04:05 -0700"}}{{end}}</td>
+      <td>{{printf "%.2f" .keg.Capacity}}l</td>
+      <td>{{printf "%.2f" .keg.Price}}€</td>
+      <td>{{printf "%.2f" .opNum}}</td>
+      <td>{{printf "%.2f" .profit}}€</td>
+    </tr>
+  </tbody>
+</table>
+
+<script>
+  { { if .notice} }
+  if (typeof Materialize !== 'undefined') {
+    Materialize.toast('{{.notice}}', 4000)
+  }
+  { { end } }
+</script>
+{{end}}

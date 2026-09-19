@@ -1,0 +1,27 @@
+<%= form_for(beerflow) do |f| %>
+  <% if beerflow.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(beerflow.errors.count, "error") %> prohibited this beerflow from being saved:</h2>
+
+      <ul>
+      <% beerflow.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :quantity %>
+    <%= f.text_field :quantity %>
+  </div>
+
+  <div class="field">
+    <%= f.label :drink_id %>
+    <%= f.text_field :drink_id %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

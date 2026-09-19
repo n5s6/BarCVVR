@@ -1,0 +1,26 @@
+<% provide(:title, "BarCVVR Opération de "+User.find(@operation.user_id).firstName) %>
+
+<div class="row">
+<table class="input-field col s12" id="infoTable">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Somme</th>
+      <th>User</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><%= @operation.date %></td>
+      <td><%= @operation.sum %></td>
+      <td><%= @operation.user_id %></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<script>
+  <% if notice %>
+  Materialize.toast('<%= notice %>', 4000) // 4000 is the duration of the toast
+  <% end %>
+</script>

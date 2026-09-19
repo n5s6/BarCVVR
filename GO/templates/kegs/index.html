@@ -1,0 +1,70 @@
+{{define "content"}}
+<h3>Fût</h3>
+
+<br />
+<br />
+
+<table class="col s12 l7 centered highlight striped" id="Table">
+  <thead>
+    <tr>
+      <th>Boisson</th>
+      <th>Startdate</th>
+      <th>Enddate</th>
+      <th>Capacité</th>
+      <th>Prix</th>
+      <th>Rentabilité</th>
+      <th colspan="2"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <!-- using kegItems to carry formatted data from handler similar to users/index -->
+    {{range .kegItems}}
+    <tr>
+      <td>{{.DrinkName}}</td>
+      <td>{{if .Keg.StartDate}}{{.Keg.StartDate.Format "2006-01-02 15:04:05 -0700"}}{{end}}</td>
+      <td>{{if .Keg.EndDate}}{{.Keg.EndDate.Format "2006-01-02 15:04:05 -0700"}}{{end}}</td>
+      <td>{{printf "%.2f" .Keg.Capacity}}l</td>
+      <td>{{printf "%.2f" .Keg.Price}}€</td>
+      <td>{{printf "%.2f" .Profit}}€</td>
+      <td>
+        <button class="btn-floating btn-larg green tooltipped" data-position="bottom" data-delay="1000"
+          data-tooltip="Infos" onclick="window.location.href='/kegs/{{.Keg.ID}}'">
+          <i class="material-icons">zoom_in</i>
+        </button>
+      </td>
+      <td>
+        <button class="btn-floating btn-larg blue tooltipped" data-position="bottom" data-delay="1000"
+          data-tooltip="Edition" onclick="window.location.href='/kegs/{{.Keg.ID}}/edit'">
+          <i class="material-icons">edit</i>
+        </button>
+      </td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>
+
+<!-- Pagination not ported yet. If will_paginate was just a simple list, we'd need a paginator. Assuming all for now since it's an old app. -->
+<div class="row">
+</div>
+
+<br />
+
+<button class="btn-floating btn-large waves-effect waves-light light-green tooltipped" data-position="top"
+  data-delay="1000" data-tooltip="Ajout d'un fût" onclick="window.location.href='/kegs/new'">
+  <i class="material-icons">add</i>
+</button>
+
+<button class="btn-floating btn-large waves-effect waves-light tooltipped" data-position="right" data-delay="1000"
+  data-tooltip="Liste des Vélivoles" onclick="window.location.href='/'">
+  <i class="material-icons">home</i>
+</button>
+
+<script>
+  {{if .notice}}
+  if (typeof Materialize !== 'undefined') {
+    Materialize.toast('{{.notice}}', 4000)
+  }
+  {{end}}
+</script>
+{{end}}

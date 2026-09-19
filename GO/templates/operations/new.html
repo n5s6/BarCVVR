@@ -1,0 +1,135 @@
+{{define "content"}}
+<h3>Nouvelle tournée de {{.user.FirstName}} {{.user.LastName}}</h3>
+
+<br><br>
+
+<div class="row">
+  <div id="forms-container">
+    <form action="/operations" accept-charset="UTF-8" method="post" id="new_operation_1" class="new_operation">
+      {{if .error}}
+      <div class="row error-block">
+        <div class="col s12 l7">
+          <div class="card red darken-4">
+            <div class="card-content white-text">
+              <span class="card-title">Erreur d'enregistrement:</span>
+              <ul>
+                <li>{{.error}}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{end}}
+
+      <div class="field" style="display: none;">
+        <label>Date</label>
+        <input type="hidden" name="operation[date]" value="" />
+      </div>
+
+      <div class="field" style="display: none;">
+        <label>User</label>
+        <input type="hidden" name="operation[user_id]" value="{{.userid}}" />
+      </div>
+
+      <div class="input-field col s12 l7">
+        <select id="post_drink_1" name="post[drink]">
+          {{range .kegs}}
+          <option value="{{.DrinkID}}">{{.DrinkName}}</option>
+          {{end}}
+        </select>
+        <label>Boisson</label>
+      </div>
+
+      <div class="input-field col s12 l7">
+        <input type="number" name="operation[numberDrink]" id="operation_numberDrink_1" pattern="^[0-9]*(\.[0-9]+)?"
+          step="0.01" />
+        <label for="operation_numberDrink_1" data-error="Ce n'est pas un nombre valide">Nombre de verres</label>
+      </div>
+      <div class="clearfix" style="clear:both;"></div>
+    </form>
+  </div>
+
+  <div class="col s12 l7" id="submit-buttons">
+    <br /><br />
+    <a class="btn-floating btn-large waves-effect waves-light green" onclick="addForm()"><i
+        class="material-icons">add</i></a>
+    <br /><br />
+    <button class="btn waves-effect waves-light" onclick="this.disabled=true;validForms(event);" type="button"
+      name="action">Valider
+      <i class="material-icons right">send</i>
+    </button>
+  </div>
+</div>
+
+<script>
+  var formTemplate;
+  $(document).ready(function () {
+    // Clone the initial form before materialize initializes the selects
+    var initialForm = document.getElementById("new_operation_1");
+    if (initialForm) {
+      formTemplate = initialForm.cloneNode(true);
+    }
+    
+    if (typeof Materialize !== 'undefined') {
+      Materialize.updateTextFields();
+      $('select').material_select();
+    }
+  });
+
+  function addForm() {
+    if (!formTemplate) return;
+    var newForm = formTemplate.cloneNode(true);
+    var numForm = document.getElementsByClassName("new_operation").length + 1;
+    newForm.id = "new_operation_" + numForm;
+    
+    // Remove error block if any
+    var errorBlock = newForm.querySelector(".error-block");
+    if (errorBlock) {
+      errorBlock.parentNode.removeChild(errorBlock);
+    }
+
+    // Update IDs for the select and input to ensure labels work correctly
+    var drinkSelect = newForm.querySelector("select");
+    if (drinkSelect) drinkSelect.id = "post_drink_" + numForm;
+
+    var numberInput = newForm.querySelector("input[name='operation[numberDrink]']");
+    var numberLabel = newForm.querySelector("label[data-error]");
+    if (numberInput) numberInput.id = "operation_numberDrink_" + numForm;
+    if (numberLabel) {
+      numberLabel.setAttribute("for", "operation_numberDrink_" + numForm);
+      numberLabel.classList.remove("active"); // let materialize update it
+    }
+
+    // Append a separator
+    var separator = document.createElement("hr");
+    separator.style.borderTop = "1px solid #ddd";
+    separator.style.margin = "20px 0";
+    document.getElementById("forms-container").appendChild(separator);
+
+    document.getElementById("forms-container").appendChild(newForm);
+    
+    if (typeof Materialize !== 'undefined') {
+      Materialize.updateTextFields();
+      $('#' + newForm.id + ' select').material_select();
+    }
+  }
+
+  function validForms(event) {
+    event.preventDefault();
+    var forms = document.getElementsByClassName("new_operation");
+    var requests = [];
+    for (var i = 0; i < forms.length; i++) {
+      var formData = $("#" + forms[i].id).serialize();
+      requests.push($.ajax({
+        type: 'POST',
+        url: "/operations",
+        data: formData
+      }));
+    }
+    
+    $.when.apply($, requests).always(function () {
+      window.location.href = "/users";
+    });
+  };
+</script>
+{{end}}

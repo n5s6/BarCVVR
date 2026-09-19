@@ -1,0 +1,63 @@
+{{define "content"}}
+<h3>Breuvages</h3>
+
+<br />
+<br />
+
+<div class="row">
+  <table class="col s12 l7 centered highlight striped" id="Table">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Type</th>
+        <th>Prix</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {{range .drinks}}
+      <tr>
+        <td>{{.Name}}</td>
+        <!-- the handler handles type formatting or we do it here. Or they are already formatted in DB if DrinkType is string. -->
+        <!-- In Rails, drink_type was "1", "2" etc. We'll map it here matching rails view, or if DB already contains string, just output it. -->
+        <td>
+          {{if eq .DrinkType "1"}}Soft
+          {{else if eq .DrinkType "2"}}Bière Cidre
+          {{else if eq .DrinkType "3"}}Vin
+          {{else if eq .DrinkType "4"}}Whisky Pastis Ricard Rhum
+          {{else}}{{.DrinkType}}{{end}}
+        </td>
+        <td>{{printf "%.2f" .Price}}€</td>
+        <td>
+          <button class="btn-floating btn-larg blue tooltipped" data-position="bottom" data-delay="1000"
+            data-tooltip="Edition de la Boisson" onclick="window.location.href='/drinks/{{.ID}}/edit'">
+            <i class="material-icons">edit</i>
+          </button>
+        </td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+
+<br>
+
+<button class="btn-floating btn-large waves-effect waves-light light-green tooltipped" data-position="top"
+  data-delay="1000" data-tooltip="Ajout d'une Boisson" onclick="window.location.href='/drinks/new'">
+  <i class="material-icons">add</i>
+</button>
+
+<button class="btn-floating btn-large waves-effect waves-light tooltipped" data-position="right" data-delay="1000"
+  data-tooltip="Liste des Vélivoles" onclick="window.location.href='/'">
+  <i class="material-icons">home</i>
+</button>
+
+<script>
+  { { if .notice} }
+  if (typeof Materialize !== 'undefined') {
+    Materialize.toast('{{.notice}}', 4000)
+  }
+  { { end } }
+</script>
+{{end}}

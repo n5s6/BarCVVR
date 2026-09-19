@@ -1,0 +1,60 @@
+{{define "content"}}
+<h3>Renflouage de {{.user.FirstName}} {{.user.LastName}}</h3>
+
+<br><br>
+
+<div class="row">
+  <form action="/operations" accept-charset="UTF-8" method="post" id="new_operation">
+    {{if .error}}
+    <div class="row">
+      <div class="col s12 l7">
+        <div class="card red darken-4">
+          <div class="card-content white-text">
+            <span class="card-title">Erreur d'enregistrement:</span>
+            <ul>
+              <li>{{.error}}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{end}}
+
+    <div class="field" style="display: none;">
+      <label for="operation_user_id">User</label>
+      <input type="number" name="operation[user_id]" id="operation_user_id" value="{{.userid}}" />
+    </div>
+
+    <div class="field" style="display: none;">
+      <label for="operation_date">Date</label>
+      <input type="hidden" name="operation[date]" id="operation_date" value="" />
+    </div>
+
+    <div class="input-field col s12 l7">
+      <input type="number" name="operation[sum]" id="operation_sum" pattern="-?[0-9]*(\.[0-9]+)?" step="0.01" />
+      <label for="operation_sum" data-error="Ce n'est pas un nombre valide">Total</label>
+    </div>
+
+    <div class="input-field col s12 l7">
+      <input type="text" name="operation[comment]" id="operation_comment" />
+      <label for="operation_comment">Commentaire</label>
+    </div>
+
+    <div class="col s12 l7">
+      <br /><br /><br />
+      <button class="btn waves-effect waves-light" onclick="this.disabled=true; this.form.submit();" type="submit"
+        name="action">Valider
+        <i class="material-icons right">send</i>
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  $(document).ready(function () {
+    if (typeof Materialize !== 'undefined') {
+      $('select').material_select();
+    }
+  });
+</script>
+{{end}}

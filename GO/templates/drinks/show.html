@@ -1,0 +1,26 @@
+{{define "content"}}
+<table class="col s12 l7 centered highlight striped" id="infoTable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Prix</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{.drink.Name}}</td>
+      <td>{{.drink.DrinkType}}</td>
+      <td>{{.drink.Price}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<script>
+  { { if .notice} }
+  if (typeof Materialize !== 'undefined') {
+    Materialize.toast('{{.notice}}', 4000)
+  }
+  { { end } }
+</script>
+{{end}}

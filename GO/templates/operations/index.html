@@ -1,0 +1,125 @@
+{{define "content"}}
+<h3>Operations</h3>
+
+<div class="row">
+  <div class="input-field col s6">
+    <input placeholder="Chercher ..." type="text" onkeyup="Search()" id="Search">
+  </div>
+  <div class="input-field col s6">
+    <button class="btn-floating btn-large waves-effect waves-light tooltipped" data-position="right" data-delay="1000"
+      data-tooltip="Liste des Vélivoles" onclick="window.location.href='/'">
+      <i class="material-icons">home</i>
+    </button>
+  </div>
+</div>
+
+<div class="row">
+
+  <table class="col s12 l7 centered highlight striped" id="Table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Somme</th>
+        <th>Boisson</th>
+        <th>Nombre de Bière</th>
+        <th>Commentaire</th>
+        <th>Vélivole</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {{range .opItems}}
+      <tr>
+        <td>{{if .Operation.Date}}{{.Operation.Date.Format "2006-01-02 15:04:05 -0700"}}{{end}}</td>
+        <td>{{printf "%.2f" .Operation.Sum}}</td>
+        <td>
+          {{if .DrinkName}}
+          {{.DrinkName}}
+          {{end}}
+        </td>
+        <td>{{printf "%.0f" .Operation.NumberDrink}}</td>
+        <td>{{.Operation.Comment}}</td>
+        <td>{{.UserFirstName}} {{.UserLastName}} <br /> {{.UserAlias}}</td>
+        <td>
+          <button class="btn-floating btn-larg blue tooltipped" data-position="bottom" data-delay="1000"
+            data-tooltip="Edition" onclick="window.location.href='/operations/{{.Operation.ID}}/edit'">
+            <i class="material-icons">edit</i>
+          </button>
+        </td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+
+</div>
+
+<div class="row">
+</div>
+
+<script>
+  { { if .notice} }
+  if (typeof Materialize !== 'undefined') {
+    Materialize.toast('{{.notice}}', 4000)
+  }
+  { { end } }
+
+  var table = document.getElementById("Table");
+  var tr = table ? table.getElementsByTagName("tr") : [];
+
+  var prevLinks = document.querySelectorAll('a[rel="prev"]');
+  if (prevLinks.length > 0) {
+    prevLinks[0].innerHTML = "<";
+  }
+
+  function Search() {
+    var input, filter, table, tr, td, i;
+    input = document.getElementById("Search");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("Table");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      var td0 = tr[i].getElementsByTagName("td")[0];
+      if (td0) {
+        if (td0.innerHTML.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+          var td1 = tr[i].getElementsByTagName("td")[1];
+          if (td1) {
+            if (td1.innerHTML.toUpperCase().indexOf(filter) > -1) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+              var td2 = tr[i].getElementsByTagName("td")[2];
+              if (td2) {
+                if (td2.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                  tr[i].style.display = "";
+                } else {
+                  tr[i].style.display = "none";
+                  var td4 = tr[i].getElementsByTagName("td")[4];
+                  if (td4) {
+                    if (td4.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                      tr[i].style.display = "";
+                    } else {
+                      tr[i].style.display = "none";
+                      var td5 = tr[i].getElementsByTagName("td")[5];
+                      if (td5) {
+                        if (td5.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                          tr[i].style.display = "";
+                        } else {
+                          tr[i].style.display = "none";
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+</script>
+{{end}}

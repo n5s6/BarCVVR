@@ -1,0 +1,87 @@
+{{define "content"}}
+<h3>Modification du fût</h3>
+
+<br><br>
+
+<div class="row">
+  <form action="/kegs/{{.keg.ID}}" accept-charset="UTF-8" method="post">
+    {{if .error}}
+    <div class="row">
+      <div class="col s12 l7">
+        <div class="card red darken-4">
+          <div class="card-content white-text">
+            <span class="card-title">Erreur d'enregistrement:</span>
+            <ul>
+              <li>{{.error}}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{end}}
+
+    <div class="input-field col s12 l7">
+      <select id="post_drink" name="post[drink]">
+        {{range .drinks}}
+        <option value="{{.ID}}" {{if eq .ID $.kegDrinkID}}selected{{end}}>{{.Name}}</option>
+        {{end}}
+      </select>
+      <label>Boisson</label>
+    </div>
+
+    <div class="input-field col s12 l7">
+      <label for="keg_capacity" class="active" data-error="Ce n'est pas un nombre valide">Capacité du fût</label>
+      <input type="number" name="keg[capacity]" id="keg_capacity" value="{{.keg.Capacity}}" pattern="[0-9]*(\.[0-9]+)?"
+        step="0.01" />
+    </div>
+
+    <div class="input-field col s12 l7">
+      <label for="keg_price" class="active" data-error="Ce n'est pas un nombre valide">Prix</label>
+      <input type="text" name="keg[price]" id="keg_price" value="{{.keg.Price}}" pattern="-?[0-9]*(\.[0-9]+)?"
+        step="0.01" />
+    </div>
+
+    <div class="input-field col s12 l7">
+      <label for="keg_startDate" class="active">Date de début du fût :</label>
+    </div>
+    <div class="input-field col s12 l7">
+      <input type="datetime-local" class="datepicker" name="keg[startDate]" id="keg_startDate"
+        value="{{if not .keg.StartDate.IsZero}}{{.keg.StartDate.Format "2006-01-02T15:04"}}{{end}}" />
+    </div>
+
+    <div class="input-field col s12 l7">
+      <label for="keg_endDate" class="active">Date de fin du fût :</label>
+    </div>
+    <div class="input-field col s12 l7">
+      <input type="datetime-local" class="datepicker" name="keg[endDate]" id="keg_endDate"
+        value="{{if not .keg.EndDate.IsZero}}{{.keg.EndDate.Format "2006-01-02T15:04"}}{{end}}" />
+    </div>
+
+    <div class="input-field col s12 l7">
+      <label for="admin_password">Mot de passe Administrateur</label>
+      <input type="password" name="admin_password" id="admin_password" value="" />
+    </div>
+
+    <div class="col s12">
+      <br>
+      <input type="checkbox" name="kg[delete]" id="kg_delete" value="yes" />
+      <label for="kg_delete" class="red-text"><b>Supprimer le fût</b></label>
+    </div>
+
+    <div class="col s12 l7">
+      <br /><br /><br />
+      <button class="btn waves-effect waves-light" type="submit" name="action">Valider
+        <i class="material-icons right">send</i>
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  $(document).ready(function () {
+    if (typeof Materialize !== 'undefined') {
+      $('select').material_select();
+    }
+  });
+</script>
+{{end}}
