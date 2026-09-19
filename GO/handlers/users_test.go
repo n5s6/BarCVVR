@@ -56,7 +56,7 @@ func TestUsersCreate(t *testing.T) {
 	}
 
 	var user models.User
-	db.First(&user, "first_name = ?", "Alice")
+	db.First(&user, "firstName = ?", "Alice")
 	if user.LastName != "Smith" {
 		t.Errorf("Expected to find user 'Alice Smith' in DB")
 	}

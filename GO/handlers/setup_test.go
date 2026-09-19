@@ -45,7 +45,7 @@ func SetupTestRouter() *gin.Engine {
 	template.Must(t.New("drinks/new.html").Parse("New Drink"))
 	template.Must(t.New("drinks/show.html").Parse("{{.drink.Name}}"))
 	template.Must(t.New("drinks/edit.html").Parse("{{.drink.Name}}"))
-	template.Must(t.New("kegs/index.html").Parse("{{range .kegs}}{{.ID}}{{end}}"))
+	template.Must(t.New("kegs/index.html").Parse("{{range .kegItems}}{{.Keg.ID}}{{end}}"))
 	template.Must(t.New("kegs/new.html").Parse("New Keg"))
 	template.Must(t.New("kegs/show.html").Parse("{{.keg.ID}}"))
 	template.Must(t.New("kegs/edit.html").Parse("Edit Keg"))
